@@ -83,15 +83,25 @@ public class Game {
         int x,y;
         random=new Random();
         leftFlags=Bomb;
-        
         cleanPressed();
         firstClick=true;
         dead=false;
         finish=false;
-        
         for(x=0;x<Width;x++)for(y=0;y<Height;y++)
-            gridGame[x][y].reset();
-        
+            gridGame[x][y].reset();       
+        setBombs(Bomb);
+        setAround();
+    }
+    private void resetI(){//Reset the grid and all variables
+        int x,y;
+        boolean flag;
+        random=new Random();
+        cleanPressed();
+        for(x=0;x<Width;x++)for(y=0;y<Height;y++){
+            flag=gridGame[x][y].isFlag();
+            gridGame[x][y].reset();      
+            gridGame[x][y].setFlag(flag);
+        }
         setBombs(Bomb);
         setAround();
     }
@@ -126,11 +136,11 @@ public class Game {
             if(firstClick){
                 if(Width*Height-Bomb>9){
                     while(gridGame[xi][yi].howManyAround()!=0||gridGame[xi][yi].isBomb())
-                        reset();
+                        resetI();
                 }
                 else {
                     if(Width*Height>Bomb)
-                        while(gridGame[xi][yi].isBomb())reset();
+                        while(gridGame[xi][yi].isBomb())resetI();
                 }
                 firstClick=false;
             }
@@ -169,7 +179,7 @@ public class Game {
             if(gridGame[x][y].isBomb()&&!gridGame[x][y].isFlag())gridGame[x][y].openMine();
         finishGame();
     }
-    public void open(int x,int y){//open a cell
+    private void open(int x,int y){//open a cell
         if(gridGame[x][y].isFinish())return;
         if(gridGame[x][y].isFlag())return;
         if(gridGame[x][y].isOpen()){
